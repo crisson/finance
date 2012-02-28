@@ -4,8 +4,16 @@
  * @requires the underscore library
  * @author Crisson Jno-Charles
  */
-var finance = (function(){
-  var fin = {};
+var Finance = (function(Finance){
+  var fin = Finance || {};
+  
+  function DependencyError(message){
+    this.name = 'DependencyError';
+    this.message = message || 'A required dependency was not found';
+  }
+  
+  DependencyError.prototype = new Error();
+  DependencyError.prototype.constructor = DependencyError;
   
   function guess_fx(guess, ar){
     var arry = [];
@@ -67,7 +75,8 @@ var finance = (function(){
   
   
   /*
-   * Calculates an amortized value of a loan
+   * Calculates the amortized value of a loan over a particular
+   * period of time
    * 
    * @this {Finance}
    * @param {number} loan_amount the loan amount.
@@ -88,7 +97,7 @@ var finance = (function(){
     function loan_outstanding(la, inte){
       var ip = -la*inte/12, // interest payment
         pd = pmt - ip, // principal paydown
-        newla = la + pd;
+        newla = la + pd; // new loan amount
         
       if (period <= 0) {
         return newla;
@@ -102,5 +111,27 @@ var finance = (function(){
   }
   
   fin.amort_with_dp = function(mortgage, downpayment, interest, period){}
+  
+  /*
+   * Calculates the value of a European style put/call option
+   *
+   * @this {Finance}
+   * @param {number} stock_price the stock price
+   * @param {number} strike the strike price of the option
+   * @param {decimal} risk_free the risk free rate of return (annual rate, continuous compounding)
+   * @param {number} volatility the historical volatility of of the stock
+   * @param {number} the time to maturity in years 
+   */
+  fin.blackscholes = function(stock_price, strike, risk_free, volatility, time){
+    if (!fin.inputs.cdf) {
+      throw new DependencyError('This function requires the continuous' + 
+      ' distribution function fin.input.cdf to operate');
+    }  
+    
+    
+    var d0 = (Math.log(stock_price/strike) + (risk_free + Math.pow(volatility, 2)/2)*time)/volatility*Math.sqrt(time);
+    return d0;
+  };
+  
   return fin; 
-})();
+})(Finance);
