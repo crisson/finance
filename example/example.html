@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>Finance.js examples</title>
+    <style type="text/css">
+      body {
+        background-color : #f1f1f1;
+      }
+      
+      #content {
+        width: 960px;
+        margin: 0 auto;
+        background-color: white;
+        min-height: 400px;
+        box-shadow: 0px 2px 2px rgba(0,0,0,.4);
+        border-radius: 4px;
+        margin-top : 30px;        
+      }
+      
+      .chart {
+        width : 500px;
+        height : 240;x
+      }
+    </style>
+    <link href="rickshaw.min.css" />
+    <script src="jquery-1.7.1.min.js"></script>
+    <script src="underscore.js"></script>
+    <script src="bean.min.js"></script>
+    <script src="flotr2.min.js"></script>
+    <script src="../finance.inputs.js"></script>
+    <script src="../finance.js"></script>
+  </head>
+  <body>
+    <div id="content">
+      <div id="chart-std-normal" class="chart"></div>  
+      <div id="chart-std-y-axis"></div>
+    </div>
+    <script type="text/javascript">
+      //var data = [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 17 }, { x: 3, y: 42 } ];
+      var data = Finance.inputs.stdnormal([-3, -2, -1, 0, 1, 2, 3]);
+      console.log(data);
+      var
+        // Container div:
+        container = document.getElementById("chart-std-normal"),
+        // First data series:
+        d1 = data,
+        // Second data series:
+        d2 = [],
+        // A couple flotr configuration options:
+        options = {
+          xaxis: {
+            minorTickFreq: 1
+          }, 
+          grid: {
+            minorVerticalLines: true
+          }
+        },
+        i, graph;
+    
+      // Generated second data set:
+      for (i = 0; i < 14; i += 0.5) {
+        d2.push([i, Math.sin(i)]);
+      }
+    
+      // Draw the graph:
+      graph = Flotr.draw(
+        container,  // Container element
+        [ d1], // Array of data series
+        options     // Configuration options
+      );
+    </script>
+  </body>
+</html>
