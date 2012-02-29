@@ -4,7 +4,8 @@ var Finance = (function(Finance){
   var inp = {};
   
   /*
-   * Cumulative Distribution Function
+   * Cumulative Distribution Function for a discrete distribution of random
+   * variables
    * 
    * @this {Finance.input}
    * @param {Array} x an array representing the number of measurements
@@ -13,7 +14,7 @@ var Finance = (function(Finance){
    * 
    * @throws {TypeError} if x or y is not an Array
    */
-  inp.cdf = function(x, fx, options){
+  inp.cdf_discrete = function(x, fx, options){
     if (!Array.prototype.reduce){
       console.log('I need to reduce!');
     }
@@ -61,10 +62,14 @@ var Finance = (function(Finance){
    * that should be returned.  If x is a number, it returns an approximate value
    * of this distribution at that number (i.e., f(x)).
    * 
-   * @param {number or object} x either the value of this function at this x
-   * coordinate, or if it is a object, the number of points in x for which
+   * @param {Number or Object} x either the value of this function at this x
+   * coordinate, or if it is an object, the number of points in x for which.
+   * You may also provide an array of values for which f(x) should be computed
    * f(x) shoule be calculated
    * @param {object} options optional properties
+   * 
+   * @return {Either[Number, Object]} coordinates if param x is an array or
+   * object, otherwise a number
    * 
    * @throws {Error} if an object is passed for x, but it doesn't contain the
    * property range, which indicates the number of values x for which f(x)
@@ -92,23 +97,17 @@ var Finance = (function(Finance){
     
     if (x instanceof Array){
       return x.map(function(val, ind){
-        var pair = {};
-        pair[ind] = calculate(val);
-        return pair;
+        return [ind, calculate(val)];
       });
     } else if (x.range){
       var pairs = [];
       for (var i = 0; i < x.range; i++){
-         var pair = {};
-         pair[i] = calculate(i);
-         pairs.push(pair);
+         pairs.push([i, calculate(i)]);
       }
       return pairs;
     } else {
       return calculate(x);
     }
-    var normal = calculate();
-    return normal;
   };
   
   fin.inputs = inp;

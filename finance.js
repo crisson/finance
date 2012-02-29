@@ -128,9 +128,17 @@ var Finance = (function(Finance){
       ' distribution function fin.input.cdf to operate');
     }  
     
+    console.log(Math.log(stock_price/strike));
+    var d0 = (Math.log(stock_price/strike) + (risk_free + 
+      (Math.pow(volatility, 2)/2))*time) /
+      (volatility*Math.sqrt(time));
+      
+    console.log(d0);
+    var std_normal = fin.inputs.stdnormal(d0);
+    console.log(std_normal);
     
-    var d0 = (Math.log(stock_price/strike) + (risk_free + Math.pow(volatility, 2)/2)*time)/volatility*Math.sqrt(time);
-    return d0;
+    var Nd0 = fin.inputs.cdf([0],[std_normal]);
+    console.log(Nd0);
   };
   
   return fin; 
