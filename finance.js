@@ -1,4 +1,3 @@
-
 /*
  * @namespace for calculating various financial metrics
  * @requires the underscore library
@@ -91,7 +90,7 @@ var Finance = (function(Finance){
    */
   fin.amort = function(loan_amount, interest, period){
     var periods = _.range(period);
-    var pmt = finance.pmt(loan_amount, interest/12);
+    var pmt = fin.pmt(loan_amount, interest/12);
     period--;
     
     function loan_outstanding(la, inte){
