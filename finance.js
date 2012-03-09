@@ -44,20 +44,21 @@ var Finance = (function(Finance){
   
   fin.irr = function irr(initial_guess, arry) {
    var rate = initial_guess;
+   var itererations_limit = 1000;
    var iterations = 0;
    var err = .01;
-      while (err > .000001 && iterations < 100){
+      while (err > .000001 && iterations < iterations_limit){
         var fx = guess_fx(rate, arry),
           fpx = guess_prime_fx(rate, arry),
           prior_rate = rate;
           
         rate = rate - fx/fpx;
-        err = rate - prior_rate;
+        err = Math.abs(rate - prior_rate);
         iterations++;
       }
       
-      if (iterations >= 100) {
-        console.log('too many iterations');
+      if (iterations >= iterations_limit) {
+        return Infinity;
       } else {
         return rate;  
       }
