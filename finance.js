@@ -7,14 +7,6 @@
 var Finance = (function(Finance){
   var fin = Finance || {};
   
-  function DependencyError(message){
-    this.name = 'DependencyError';
-    this.message = message || 'A required dependency was not found';
-  }
-  
-  DependencyError.prototype = new Error();
-  DependencyError.prototype.constructor = DependencyError;
-  
   function guess_fx(guess, ar){
     var arry = [];
     _.map(ar, function(val, ind){
