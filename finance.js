@@ -1,4 +1,3 @@
-
 /*
  * @namespace for calculating various financial metrics
  * @requires the underscore library
@@ -39,25 +38,26 @@ var Finance = (function(Finance){
   
   fin.irr = function irr(initial_guess, arry) {
    var rate = initial_guess;
+   var itererations_limit = 1000;
    var iterations = 0;
    var iter_limit = 1000;
    var err = .01;
-    while (err > .000001 && iterations < iter_limit){
-      var fx = guess_fx(rate, arry),
-        fpx = guess_prime_fx(rate, arry),
-        prior_rate = rate;
-        
-      rate = rate - fx/fpx;
+
+      while (err > .000001 && iterations < iterations_limit){
+        var fx = guess_fx(rate, arry),
+          fpx = guess_prime_fx(rate, arry),
+          prior_rate = rate;
+          
+        rate = rate - fx/fpx;
+        err = Math.abs(rate - prior_rate);
+        iterations++;
+      }
       
-      err = Math.abs(rate - prior_rate);
-      iterations++;
-    }
-    
-    if (iterations >= iter_limit) {
-      console.log('too many iterations');
-    } else {
-      return rate;  
-    }
+      if (iterations >= iterations_limit) {
+        return Infinity;
+      } else {
+        return rate;  
+      }
   };
   
   /*
@@ -100,17 +100,21 @@ var Finance = (function(Finance){
    */
   fin.amort = function(loan_amount, interest, year, options){
     options = options || {};
-    var period = MONTHS_PER_YEAR * year;
-    var periods = _.range(period);
-    var pmt = fin.pmt(loan_amount, interest/MONTHS_PER_YEAR, 
+    var period = MONTHS_PER_YEAR * year, 
+      periods = _.range(period),
+      pmt = fin.pmt(loan_amount, interest/MONTHS_PER_YEAR, 
       options.mortgage_term);
+    
+    // decrement the number of months by one, such that the loan amount returned
+    // is the loan value after the last day of the year after the number of 
+    // years specified
     period--;
 
     function loan_outstanding(la, inte){
       var ip = -la*inte/MONTHS_PER_YEAR, // interest payment
         pd = pmt - ip, // principal paydown
         newla = la + pd; // new loan amount
-      // console.log(newla);    
+        
       if (period <= 0) {
         return newla;
       } else {
