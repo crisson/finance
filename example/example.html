@@ -80,7 +80,7 @@
         <span>Reference: </span><a class="reference" target="_blank" href="http://en.wikipedia.org/wiki/Amortization_schedule">http://en.wikipedia.org/wiki/Amortization_schedule</a>
         <div class="example-label">Example: </div>
         <div class="example">
-          <div class="command"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>Finance.amort(-100000, .07, 7, {mortgage_term : 20})<span class="inline-doc"> // (-loan_amount, interest, years, [, options])</span></div>
+          <div class="command"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>Finance.amort(-100000, .07, 7, {mortgage_term : 20})<span class="inline-doc"> // (-loan_amount, interest, years, [options])</span></div>
           <div class="output"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>-79267.91062420633</div>
         </div>
       </div>                  
@@ -89,8 +89,8 @@
         <span>Reference: </span><a class="reference" target="_blank" href="http://en.wikipedia.org/wiki/Internal_rate_of_return">http://en.wikipedia.org/wiki/Internal_rate_of_return</a>
         <div class="example-label">Example: </div>
         <div class="example">
-          <div class="command"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>Finance.irr(.1, [-1000, 200, 200, 200, 200, 200, 200])<span class="inline-doc"> // (initial_guess, [cash_flows])</span></div>
-          <div class="output"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>0.054717925023536736</div>
+          <div class="command"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>Finance.irr(.1, [-4000, 1200, 1410, 1875, 1050])<span class="inline-doc"> // (initial_guess, cash_flows)</span></div>
+          <div class="output"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>0.14299344106065257</div>
         </div>
       </div>  
     </div>

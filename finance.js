@@ -38,7 +38,7 @@ var Finance = (function(Finance){
   
   fin.irr = function irr(initial_guess, arry) {
    var rate = initial_guess;
-   var itererations_limit = 1000;
+   var iterations_limit = 1000;
    var iterations = 0;
    var iter_limit = 1000;
    var err = .01;
