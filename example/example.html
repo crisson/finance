@@ -13,31 +13,92 @@
         min-height: 400px;
         box-shadow: 0px 2px 2px rgba(0,0,0,.4);
         border-radius: 4px;
-        margin-top : 30px;        
+        margin-top : 30px;    
+        padding : 10px;    
       }
       
       .chart {
         width : 500px;
-        height : 240;x
+        height : 240px;
+      }
+      
+      .example {
+        background-color: #F1F1F1;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        margin-top: 5px;        
+      }
+      
+      .inline-doc {
+        color : green;
+      }
+      
+      .js-start {
+        color : #858585;
+        font-size : 12px;
+      }
+      
+      .output {
+        margin-top : 5px;
+        color : blue;
+      }
+      
+      .example-label {
+        font-size : 14px;
+        margin-top : 5px;
       }
     </style>
     <link href="rickshaw.min.css" />
     <script src="jquery-1.7.1.min.js"></script>
-    <script src="underscore.js"></script>
+    <!-- <script src="underscore.js"></script> -->
     <script src="bean.min.js"></script>
     <script src="flotr2.min.js"></script>
     <script src="../finance.inputs.js"></script>
     <script src="../finance.js"></script>
+    <script type="text/javascript">
+      if (!window.console){
+        window.console = { log : function(){} };
+      }
+    </script>
   </head>
   <body>
     <div id="content">
       <div id="chart-std-normal" class="chart"></div>  
       <div id="chart-std-y-axis"></div>
+      <div id="calc-pmt">
+        <h3>Monthly Payment</h3>
+        <span>Reference: </span><a class="reference" target="_blank" href="http://en.wikipedia.org/wiki/Mortgage_calculator#Monthly_payment_formula">http://en.wikipedia.org/wiki/Mortgage_calculator#Monthly_payment_formula</a>
+        <div class="example-label">Example: </div>
+        <div class="example">
+          <div class="command"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>Finance.pmt(-100000, .07/12, 20)<span class="inline-doc"> // (-loan_amount, monthly_interest, years)</span></div>
+          <div class="output"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>775.2989356188734</div>
+        </div>
+      </div>
+      <div id="calc-loan-amort">
+        <h3>Loan Amoritization</h3>
+        <span>Reference: </span><a class="reference" target="_blank" href="http://en.wikipedia.org/wiki/Amortization_schedule">http://en.wikipedia.org/wiki/Amortization_schedule</a>
+        <div class="example-label">Example: </div>
+        <div class="example">
+          <div class="command"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>Finance.amort(-100000, .07, 7, {mortgage_term : 20})<span class="inline-doc"> // (-loan_amount, interest, years, [, options])</span></div>
+          <div class="output"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>-79267.91062420633</div>
+        </div>
+      </div>                  
+      <div id="calc-irr">
+        <h3>IRR</h3>
+        <span>Reference: </span><a class="reference" target="_blank" href="http://en.wikipedia.org/wiki/Internal_rate_of_return">http://en.wikipedia.org/wiki/Internal_rate_of_return</a>
+        <div class="example-label">Example: </div>
+        <div class="example">
+          <div class="command"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>Finance.irr(.1, [-1000, 200, 200, 200, 200, 200, 200])<span class="inline-doc"> // (initial_guess, [cash_flows])</span></div>
+          <div class="output"><span class="js-start">&gt;&gt;&nbsp;&nbsp;</span>0.054717925023536736</div>
+        </div>
+      </div>  
     </div>
+
     <script type="text/javascript">
       //var data = [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 17 }, { x: 3, y: 42 } ];
       var data = Finance.inputs.stdnormal([-3, -2, -1, 0, 1, 2, 3]);
-      console.log(data);
+      // console.log(data);
       var
         // Container div:
         container = document.getElementById("chart-std-normal"),
@@ -55,11 +116,7 @@
           }
         },
         i, graph;
-    
-      // Generated second data set:
-      for (i = 0; i < 14; i += 0.5) {
-        d2.push([i, Math.sin(i)]);
-      }
+
     
       // Draw the graph:
       graph = Flotr.draw(

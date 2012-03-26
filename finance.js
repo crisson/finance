@@ -7,6 +7,8 @@
 var Finance = (function(Finance){
   var fin = Finance || {};
   
+  var MONTHS_PER_YEAR = 12;
+  
   function guess_fx(guess, ar){
     var arry = [];
     _.map(ar, function(val, ind){
@@ -38,29 +40,42 @@ var Finance = (function(Finance){
   fin.irr = function irr(initial_guess, arry) {
    var rate = initial_guess;
    var iterations = 0;
+   var iter_limit = 1000;
    var err = .01;
-      while (err > .000001 && iterations < 100){
-        var fx = guess_fx(rate, arry),
-          fpx = guess_prime_fx(rate, arry),
-          prior_rate = rate;
-          
-        rate = rate - fx/fpx;
-        err = rate - prior_rate;
-        iterations++;
-      }
+    while (err > .000001 && iterations < iter_limit){
+      var fx = guess_fx(rate, arry),
+        fpx = guess_prime_fx(rate, arry),
+        prior_rate = rate;
+        
+      rate = rate - fx/fpx;
       
-      if (iterations >= 100) {
-        console.log('too many iterations');
-      } else {
-        return rate;  
-      }
+      err = Math.abs(rate - prior_rate);
+      iterations++;
+    }
+    
+    if (iterations >= iter_limit) {
+      console.log('too many iterations');
+    } else {
+      return rate;  
+    }
   };
   
-  fin.pmt = function(principal, interest) {
+  /*
+   * Calculates the monthly payment on a loan
+   * 
+   * @this {Finance}
+   * @param {number} principal the amount borrowed
+   * @param {decimal} interest the rate of interest on the loan, compounded monthly
+   * @param {number=} mortgage_term the time over which the mortgage will be paid
+   * back (optional).
+   */
+  fin.pmt = function(principal, interest, mortgage_term) {
     var p = principal,
       i = interest,
-      n = 12*30; // 12 months per year for 30 years
-
+      /*
+       * @default 360
+       */
+      n = mortgage_term ? MONTHS_PER_YEAR * mortgage_term : MONTHS_PER_YEAR * 30; // 12 months per year for 30 years as default
     p = p < 0 ? Math.abs(p) : p;  
     return p * (i*Math.pow(1+i, n))/(Math.pow(1+i, n) - 1);
   };
@@ -73,24 +88,29 @@ var Finance = (function(Finance){
    * @this {Finance}
    * @param {number} loan_amount the loan amount.
    * @param {decimal} interest the interest amount, compounded annually (e.g., .04).
-   * @param {number} period the period over which the amortization schedule should
-   * be calculated
+   * @param {number} years the number years after which the current value of the
+   * loan should be calculated
+   * @param {Object=} options optional parameters
+   *  @param {number=} mortgage_term the mortgage term
    * @return the amortized value of the loan_amount, as of the start of the month following
    * the period
    * 
    * @example
-   * Finance.amort(-180000, .04, 36) = -170097.70
+   * Finance.amort(-180000, .04, 3) = -170097.70
    */
-  fin.amort = function(loan_amount, interest, period){
+  fin.amort = function(loan_amount, interest, year, options){
+    options = options || {};
+    var period = MONTHS_PER_YEAR * year;
     var periods = _.range(period);
-    var pmt = finance.pmt(loan_amount, interest/12);
+    var pmt = fin.pmt(loan_amount, interest/MONTHS_PER_YEAR, 
+      options.mortgage_term);
     period--;
-    
+
     function loan_outstanding(la, inte){
-      var ip = -la*inte/12, // interest payment
+      var ip = -la*inte/MONTHS_PER_YEAR, // interest payment
         pd = pmt - ip, // principal paydown
         newla = la + pd; // new loan amount
-        
+      // console.log(newla);    
       if (period <= 0) {
         return newla;
       } else {
