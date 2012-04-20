@@ -48,14 +48,13 @@ var Finance = (function(Finance){
   
   
   function guess_prime_fx(guess, ar) {
-    var output = ar.reduce(function(prev, curr, ind){
+    return ar.reduce(function(prev, curr, ind){
         if (ind === 0){
             return prev;
         } else {
             return prev + (-ind)*curr*Math.pow(1+guess, -ind -1);            
         }
     }, 0);
-    return output;
   }  
   
   
@@ -126,7 +125,7 @@ var Finance = (function(Finance){
     var period = MONTHS_PER_YEAR * year, 
       periods = _.range(period),
       pmt = fin.pmt(loan_amount, interest/MONTHS_PER_YEAR, 
-      options.mortgage_term);
+        options.mortgage_term);
     
     // decrement the number of months by one, such that the loan amount returned
     // is the loan value after the last day of the year after the number of 
