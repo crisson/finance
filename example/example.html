@@ -112,11 +112,10 @@
 
     <script type="text/javascript">
       //var data = [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 17 }, { x: 3, y: 42 } ];
-      var data = Finance.inputs.stdnormal([-3, -2, -1, 0, 1, 2, 3]);
-      // console.log(data);
-      var
-        // Container div:
-        container = document.getElementById("chart-std-normal"),
+      var series = _.range(-50, 50);
+      var data = Finance.inputs.stdnormal(series);
+      console.log(data);
+      var container = document.getElementById("chart-std-normal"),
         // First data series:
         d1 = data,
         // Second data series:

@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+/*jshint trailing:false */
+
 /*
  * @namespace for calculating various financial metrics
  * @requires the underscore library
@@ -34,7 +36,7 @@ var Finance = (function(Finance){
   function guess_fx(guess, ar){
     var arry = [];
     _.map(ar, function(val, ind){
-      arry.push({ind : val});  
+      arry.push({ind : val});
     });
     return ar.reduce(function(prev, curr, ind, arry){
       if (ind === 0){
@@ -44,7 +46,7 @@ var Finance = (function(Finance){
           return prev + calc; 
       }         
     }, 0);    
-  }; 
+  }
   
   
   function guess_prime_fx(guess, ar) {
@@ -63,9 +65,9 @@ var Finance = (function(Finance){
    var iterations_limit = 1000;
    var iterations = 0;
    var iter_limit = 1000;
-   var err = .01;
+   var err = 0.01;
 
-      while (err > .000001 && iterations < iterations_limit){
+      while (err > 0.000001 && iterations < iterations_limit){
         var fx = guess_fx(rate, arry),
           fpx = guess_prime_fx(rate, arry),
           prior_rate = rate;
@@ -95,9 +97,10 @@ var Finance = (function(Finance){
     var p = principal,
       i = interest,
       /*
+       * @default 12 months per year for 30 years as default
        * @default 360
        */
-      n = mortgage_term ? MONTHS_PER_YEAR * mortgage_term : MONTHS_PER_YEAR * 30; // 12 months per year for 30 years as default
+      n = mortgage_term ? MONTHS_PER_YEAR * mortgage_term : MONTHS_PER_YEAR * 30; 
     p = p < 0 ? Math.abs(p) : p;  
     return p * (i*Math.pow(1+i, n))/(Math.pow(1+i, n) - 1);
   };
@@ -148,7 +151,7 @@ var Finance = (function(Finance){
     return loan_outstanding(loan_amount, interest);  
   }
   
-  fin.amort_with_dp = function(mortgage, downpayment, interest, period){}
+  fin.amort_with_dp = function(mortgage, downpayment, interest, period){};
   
   /*
    * Calculates the value of a European style put/call option
@@ -160,24 +163,24 @@ var Finance = (function(Finance){
    * @param {number} volatility the historical volatility of of the stock
    * @param {number} the time to maturity in years 
    */
-  fin.blackscholes = function(stock_price, strike, risk_free, volatility, time){
-    if (!fin.inputs.cdf) {
-      throw new DependencyError('This function requires the continuous' + 
-      ' distribution function fin.input.cdf to operate');
-    }  
+  // fin.blackscholes = function(stock_price, strike, risk_free, volatility, time){
+  //   if (!fin.inputs.cdf) {
+  //     throw new DependencyError('This function requires the continuous' + 
+  //     ' distribution function fin.input.cdf to operate');
+  //   }  
     
-    console.log(Math.log(stock_price/strike));
-    var d0 = (Math.log(stock_price/strike) + (risk_free + 
-      (Math.pow(volatility, 2)/2))*time) /
-      (volatility*Math.sqrt(time));
+  //   console.log(Math.log(stock_price/strike));
+  //   var d0 = (Math.log(stock_price/strike) + (risk_free + 
+  //     (Math.pow(volatility, 2)/2))*time) /
+  //     (volatility*Math.sqrt(time));
       
-    console.log(d0);
-    var std_normal = fin.inputs.stdnormal(d0);
-    console.log(std_normal);
+  //   console.log(d0);
+  //   var std_normal = fin.inputs.stdnormal(d0);
+  //   console.log(std_normal);
     
-    var Nd0 = fin.inputs.cdf([0],[std_normal]);
-    console.log(Nd0);
-  };
+  //   var Nd0 = fin.inputs.cdf([0],[std_normal]);
+  //   console.log(Nd0);
+  // };
   
   return fin; 
 })(Finance);
